@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bench — project management for research labs</title>
+<meta name="description" content="Bench is lightweight project management built for an academic research lab: grants, papers, projects, people, service work and teaching in one calm place. Native on Mac and iPhone.">
+<link rel="icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/icon.png">
+<meta property="og:title" content="Bench">
+<meta property="og:description" content="Lightweight project management, built for an academic research lab. Native on Mac and iPhone.">
+<meta property="og:image" content="https://khybiske.github.io/bench-site/img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f6f8fb;
+  --paper-2: #ffffff;
+  --ink: #0f1b2d;
+  --ink-2: #4a5a70;
+  --ink-3: #7b8799;
+  --grid: rgba(30, 91, 176, 0.035);
+  --grid-strong: rgba(30, 91, 176, 0.07);
+  --blue: #1e5bb0;
+  --panel: rgba(30, 91, 176, 0.045);
+  --rule: rgba(15, 27, 45, 0.1);
+  --bezel: #0d0f12;
+  --shadow: 0 30px 60px -20px rgba(15, 40, 80, 0.35), 0 10px 20px -10px rgba(15, 40, 80, 0.2);
+  --card-shadow: 0 14px 30px -14px rgba(15, 40, 80, 0.35), 0 0 0 1px rgba(15, 27, 45, 0.06);
+  --serif: "Newsreader", "New York", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0b1220;
+    --paper-2: #111a2c;
+    --ink: #e9eef6;
+    --ink-2: #a8b4c6;
+    --ink-3: #7d8aa0;
+    --grid: rgba(120, 170, 255, 0.05);
+    --grid-strong: rgba(120, 170, 255, 0.09);
+    --blue: #7fb0ff;
+    --panel: rgba(127, 176, 255, 0.06);
+    --rule: rgba(233, 238, 246, 0.1);
+    --bezel: #2a2f38;
+    --shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7), 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+    --card-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+html, body { overflow-x: clip; }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 900px) { .wrap { padding: 0 16px; } }
+
+/* Nav */
+nav.top {
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
+  border-bottom: 1px solid var(--rule);
+}
+nav.top .wrap { display: flex; align-items: center; gap: 28px; height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 650; color: var(--ink); font-size: 17px; }
+.brand img { width: 30px; height: 30px; }
+.brand:hover { text-decoration: none; }
+nav.top .links { display: flex; gap: 22px; margin-left: auto; font-size: 14.5px; }
+nav.top .links a { color: var(--ink-2); }
+nav.top .links a:hover { color: var(--ink); text-decoration: none; }
+@media (max-width: 640px) { nav.top .links a:not(.cta-link) { display: none; } }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 20px; border-radius: 999px; font-weight: 600; font-size: 15.5px;
+  border: 1px solid transparent; transition: transform .15s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn.primary { background: var(--ink); color: var(--paper); box-shadow: 0 6px 18px -6px rgba(15,27,45,.5); }
+.btn.ghost { background: var(--paper-2); color: var(--ink); border-color: var(--rule); }
+.btn svg { width: 17px; height: 17px; }
+button.btn { font: inherit; font-weight: 600; font-size: 15.5px; cursor: pointer; }
+.soon-note { font-size: 14px; color: var(--blue); margin: 12px 0 0 !important; min-height: 1.5em; opacity: 0; transition: opacity .3s ease; }
+.soon-note.show { opacity: 1; }
+
+/* Device frames */
+.phone {
+  background: var(--bezel); border-radius: 46px; padding: 9px;
+  box-shadow: var(--shadow), inset 0 0 0 1.5px rgba(255,255,255,.08);
+}
+.phone img { border-radius: 38px; width: 100%; aspect-ratio: 1206 / 2622; object-fit: cover; }
+.mac img { width: 100%; filter: drop-shadow(0 26px 34px rgba(15, 40, 80, 0.28)); }
+@media (prefers-color-scheme: dark) { .mac img { filter: drop-shadow(0 26px 34px rgba(0,0,0,.6)) drop-shadow(0 0 1px rgba(255,255,255,.25)); } }
+@media (max-width: 700px) { .phone { border-radius: 26px; padding: 5px; } .phone img { border-radius: 22px; } }
+
+/* Hero */
+.hero { padding-top: 96px; padding-bottom: 88px; display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: center; }
+.hero-copy { max-width: 780px; }
+/* Hero icon as a small 3D slab: stacked darker copies make the edge, a soft floor shadow sits below */
+.hero-icon { --d: 1px; width: 250px; justify-self: end; position: relative; perspective: 1100px; margin-right: 10px; }
+.hero-icon .stage { transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
+.hero-icon .slab { position: relative; transform-style: preserve-3d; transform: rotateX(12deg) rotateY(-20deg) rotateZ(-3deg); }
+.hero-icon .slab img { display: block; width: 100%; }
+.hero-icon .slab .edge { position: absolute; inset: 0; transform: translateZ(calc(var(--z) * var(--d) * -1)); filter: brightness(.55) saturate(1.3); }
+.hero-icon .slab .face { position: relative; filter: drop-shadow(0 0 1px rgba(255,255,255,.35)); }
+.hero-icon .floor {
+  position: absolute; left: 10%; right: 10%; bottom: -15%; height: 14%; border-radius: 50%;
+  background: radial-gradient(closest-side, var(--floor), transparent); filter: blur(5px);
+}
+:root { --floor: rgba(15, 40, 80, .38); }
+@media (prefers-color-scheme: dark) { :root { --floor: rgba(0, 0, 0, .75); } }
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 0; padding-top: 48px; padding-bottom: 64px; }
+  .hero-icon { --d: .4px; width: 96px; justify-self: start; order: -1; margin: 0 0 34px 6px; perspective: 500px; }
+}
+.eyebrow { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); font-weight: 650; margin: 0 0 18px; }
+h1 {
+  font-family: var(--serif); font-weight: 500; font-size: clamp(44px, 6.6vw, 80px);
+  line-height: 1.02; letter-spacing: -0.02em; margin: 0 0 24px;
+}
+h1 em {
+  font-style: italic; color: var(--blue); white-space: nowrap;
+  background-image: linear-gradient(color-mix(in srgb, var(--blue) 22%, transparent), color-mix(in srgb, var(--blue) 22%, transparent));
+  background-repeat: no-repeat; background-position: 0 88%; background-size: 100% .16em;
+}
+.lede { font-size: 20px; color: var(--ink-2); max-width: 34em; margin: 0 0 30px; }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+.meta { font-size: 13.5px; color: var(--ink-3); margin: 0; }
+@media (max-width: 520px) { .lede { font-size: 18px; } .ctas .btn { flex: 1 1 100%; justify-content: center; } }
+
+/* Hero motion: rise in on load, underline draws, icon settles then floats */
+@media (prefers-reduced-motion: no-preference) {
+  .hero .rise { opacity: 0; transform: translateY(14px); animation: rise .8s cubic-bezier(.2,.7,.2,1) forwards; }
+  .hero .rise:nth-child(2) { animation-delay: .12s; }
+  .hero .rise:nth-child(3) { animation-delay: .24s; }
+  .hero .rise:nth-child(4) { animation-delay: .36s; }
+  .hero .rise:nth-child(5) { animation-delay: .44s; }
+  h1 em { background-size: 0% .16em; animation: underline .9s cubic-bezier(.6,0,.2,1) .7s forwards; }
+  .hero-icon { opacity: 0; animation: drop 1.1s cubic-bezier(.3,1.5,.5,1) .15s forwards; }
+  .hero-icon .slab { animation: wander 20s ease-in-out 1.2s infinite; }
+  .hero-icon .floor { animation: floor 20s ease-in-out 1.2s infinite; }
+}
+@keyframes rise { to { opacity: 1; transform: none; } }
+@keyframes underline { to { background-size: 100% .16em; } }
+@keyframes drop { from { opacity: 0; transform: translateY(-26px) scale(.9) rotate(-6deg); } to { opacity: 1; transform: none; } }
+@keyframes wander {
+  0%, 100% { transform: translateY(0) rotateX(12deg) rotateY(-20deg) rotateZ(-3deg); }
+  50% { transform: translateY(-2.5%) rotateX(14deg) rotateY(-15deg) rotateZ(-2deg); }
+}
+@keyframes floor {
+  0%, 100% { transform: scaleX(1); opacity: 1; }
+  50% { transform: scaleX(.93); opacity: .8; }
+}
+
+/* Feature sections */
+section.feature { padding: 96px 0; border-top: 1px solid var(--rule); }
+.kicker { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); font-weight: 650; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+.kicker .n { font-family: var(--serif); font-style: italic; letter-spacing: 0; text-transform: none; color: var(--blue); font-size: 17px; }
+h2 {
+  font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 4.4vw, 50px);
+  line-height: 1.06; letter-spacing: -0.015em; margin: 0 0 20px;
+}
+.feature p { font-size: 18px; color: var(--ink-2); margin: 0 0 18px; max-width: 34em; }
+.feature ul { list-style: none; padding: 0; margin: 26px 0 0; display: grid; gap: 12px; }
+.feature li { padding-left: 28px; position: relative; font-size: 16px; }
+.feature li::before {
+  content: ""; position: absolute; left: 2px; top: .45em; width: 12px; height: 12px;
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+  background: var(--blue); opacity: .85;
+}
+
+/* Copy beside a visual */
+.side { display: grid; grid-template-columns: 1fr 320px; gap: 80px; align-items: center; }
+.side.flip { grid-template-columns: 320px 1fr; }
+.side.flip .copy { order: 2; }
+.side.has-pair { grid-template-columns: 1fr 460px; gap: 64px; }
+.side.flip.has-pair { grid-template-columns: 460px 1fr; }
+.side.has-combo { grid-template-columns: 1fr 560px; gap: 60px; }
+.side.flip.has-combo { grid-template-columns: 560px 1fr; }
+
+/* Two iPhones */
+.pair { position: relative; aspect-ratio: 460 / 640; }
+.pair .phone { position: absolute; width: 62%; }
+.pair .back { left: 0; top: 0; transform: rotate(-4deg); }
+.pair .front { right: 0; bottom: 0; z-index: 1; }
+.side.flip .pair .back { left: auto; right: 0; transform: rotate(4deg); }
+.side.flip .pair .front { right: auto; left: 0; }
+
+/* Three iPhones, fanned */
+.trio { position: relative; aspect-ratio: 560 / 620; }
+.trio .phone { position: absolute; width: 43%; }
+.trio .p1 { left: 0; top: 6%; transform: rotate(-5deg); }
+.trio .p2 { left: 28.5%; top: 0; z-index: 2; }
+.trio .p3 { right: 0; top: 6%; z-index: 1; transform: rotate(5deg); }
+
+/* Compact Mac window with an iPhone sheet on its corner */
+.combo { position: relative; padding-bottom: 14%; }
+.combo .mac { width: 84%; }
+.combo .phone { position: absolute; width: 31%; right: 0; bottom: 0; }
+.side.flip .combo .mac { margin-left: auto; }
+.side.flip .combo .phone { right: auto; left: 0; }
+
+@media (max-width: 960px) {
+  .side.has-combo { grid-template-columns: 1fr 460px; gap: 48px; }
+  .side.flip.has-combo { grid-template-columns: 460px 1fr; }
+}
+@media (max-width: 860px) {
+  section.feature { padding: 64px 0; }
+  .side, .side.flip, .side.has-pair, .side.flip.has-pair, .side.has-combo, .side.flip.has-combo { grid-template-columns: 1fr; gap: 44px; }
+  .side.flip .copy { order: 0; }
+  .side .shot { max-width: 280px; margin: 0 auto; width: 100%; }
+  .side .shot.pair { max-width: 420px; }
+  .side .shot.combo, .side .shot.trio { max-width: 520px; }
+}
+
+/* Small things */
+section.small { padding: 96px 0; border-top: 1px solid var(--rule); }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 18px; overflow: hidden; margin-top: 40px; }
+.grid3 > div { background: var(--paper-2); padding: 26px 26px 28px; }
+.grid3 h3 { margin: 0 0 6px; font-size: 16.5px; font-weight: 650; display: flex; gap: 10px; align-items: center; }
+.grid3 h3 span { font-size: 20px; }
+.grid3 p { margin: 0; color: var(--ink-2); font-size: 15px; }
+@media (max-width: 860px) { .grid3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .grid3 { grid-template-columns: 1fr; } }
+
+/* Try it */
+section.try { padding: 100px 0 110px; border-top: 1px solid var(--rule); text-align: center; }
+section.try img.big-icon { width: 112px; height: 112px; margin: 0 auto 26px; }
+section.try > .wrap > p { color: var(--ink-2); font-size: 18px; max-width: 34em; margin: 0 auto 30px; }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 760px; margin: 40px auto 0; text-align: left; }
+.card { background: var(--paper-2); border: 1px solid var(--rule); border-radius: 18px; padding: 24px; }
+.card h3 { margin: 0 0 6px; font-size: 17px; }
+.card p { margin: 0 0 16px; font-size: 15px; color: var(--ink-2); }
+.card .status { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 650; color: var(--ink-3); }
+@media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+
+footer { border-top: 1px solid var(--rule); padding: 30px 0 50px; font-size: 13.5px; color: var(--ink-3); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><img src="img/icon.png" alt="">Bench</a>
+    <div class="links">
+      <a href="#today">Tour</a>
+      <a href="#small">Details</a>
+      <a class="cta-link" href="#try">Coming soon</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="hero-copy">
+    <p class="eyebrow rise">Lightweight project management for research labs</p>
+    <h1 class="rise">Your whole lab, <em>on one bench.</em></h1>
+    <p class="lede rise">Bench is a lightweight project manager built around how an academic research lab actually works. Grants, papers, projects, people, service work and teaching live in one calm place, with a short list of what matters today on top. It's native on Mac and iPhone, so use either or both, and it syncs through your own iCloud.</p>
+    <div class="ctas rise">
+      <a class="btn primary" href="#today">Take the tour ↓</a>
+      <a class="btn ghost" href="#try">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3-1.5z"/></svg>
+        Coming soon to Mac &amp; iPhone
+      </a>
+    </div>
+    <p class="meta rise">A personal project, built by a working PI. Free. For macOS 26 and iOS 26.</p>
+  </div>
+  <div class="hero-icon" aria-hidden="true"><div class="stage"><div class="slab"><img class="face" src="img/icon_3d.png" alt=""></div></div><div class="floor"></div></div>
+</header>
+
+<!-- i. Today -->
+<section class="feature" id="today">
+  <div class="wrap side">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">i.</span> Today</p>
+      <h2>Start every morning with a short list.</h2>
+      <p>Today gives you three buckets: Top Priority, Secondary Goals and Quick Wins. Anything you don't finish carries over on its own. Each task can link back to the grant, paper or project it belongs to, so you can see why it matters.</p>
+      <ul>
+        <li>Deadlines turn red, amber or orange as they get closer</li>
+        <li>Push a task to tomorrow or the next workday with one tap</li>
+        <li>Pin important emails and links right on a task</li>
+        <li>Star up to three things as your Focus Area, and they stay in view underneath</li>
+      </ul>
+    </div>
+    <div class="shot reveal"><div class="phone"><picture><source srcset="img/today_dark.jpg" media="(prefers-color-scheme: dark)"><img src="img/today.jpg" alt="Bench Today screen with Top Priority, Secondary Goals, Quick Wins and the Focus Area"></picture></div></div>
+  </div>
+</section>
+
+<!-- ii. Projects -->
+<section class="feature">
+  <div class="wrap side flip has-combo">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">ii.</span> Projects</p>
+      <h2>Every project, and the very next step.</h2>
+      <p>See every project in the lab at once. Each card shows the next step, who's on it and how long it's been waiting, so you can tell what's moving and what's stuck without opening anything.</p>
+      <p>When you need the detail, open a project and it's all there: the question it's asking, its aims laid out as experiments, and the figures, links and people that belong to it.</p>
+      <ul>
+        <li>Active, Planning and On Hold lanes, plus an Idea Bin</li>
+        <li>Ideas graduate into projects, question and aims included</li>
+        <li>Give each project its own picture or emoji</li>
+      </ul>
+    </div>
+    <div class="shot combo reveal">
+      <div class="mac"><img src="img/mac_projects.webp" alt="Bench Projects board on Mac"></div>
+      <div class="phone"><img src="img/project_sheet.jpg" alt="A project sheet on iPhone with aims laid out as experiments"></div>
+    </div>
+  </div>
+</section>
+
+<!-- iii. Grants -->
+<section class="feature">
+  <div class="wrap side has-combo">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">iii.</span> Grants</p>
+      <h2>Grants, from first draft to final year.</h2>
+      <p>The grant pipeline runs from Pre-Submission to In Review to Funded. Upcoming internal and agency deadlines sit at the top. Open a funded award to see which year it's in, how far through that year you are, and when the next progress report is due. Proposals in review carry their impact score.</p>
+      <ul>
+        <li>Study section dates, impact scores and budgets</li>
+        <li>No-cost extensions and award years at a glance</li>
+        <li>Linked emails and websites for every award</li>
+      </ul>
+    </div>
+    <div class="shot combo reveal">
+      <div class="mac"><img src="img/mac_grants.webp" alt="Bench Grants pipeline on Mac"></div>
+      <div class="phone"><img src="img/grant_sheet.jpg" alt="A funded grant sheet on iPhone showing the award year"></div>
+    </div>
+  </div>
+</section>
+
+<!-- iv. Papers -->
+<section class="feature">
+  <div class="wrap side flip has-combo">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">iv.</span> Papers</p>
+      <h2>Manuscripts that keep moving.</h2>
+      <p>Follow every manuscript from first draft to print. Each card shows how long a paper has been sitting at its stage, so a stalled one is easy to spot, and each paper keeps a timeline of every submission, rejection and resubmission.</p>
+      <p>Then tap the magic wand. Bench checks PubMed for your papers in review, accepted or just out, and finalizes the ones that have been published, with the full citation filled in and a seal on the card.</p>
+      <ul>
+        <li>Author lines, target journals and revision rounds</li>
+        <li>A publication chart of your lab's output over the years</li>
+        <li>Link each paper to the projects and grants it came from</li>
+      </ul>
+    </div>
+    <div class="shot combo reveal">
+      <div class="mac"><img src="img/mac_papers.webp" alt="Bench Papers pipeline on Mac"></div>
+      <div class="phone"><img src="img/papers_board.jpg" alt="Published papers on iPhone: a finalized paper with its seal, one waiting to be finalized, and the magic wand"></div>
+    </div>
+  </div>
+</section>
+
+<!-- v. People -->
+<section class="feature">
+  <div class="wrap side has-combo">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">v.</span> People &amp; lab</p>
+      <h2>Your lab, face by face.</h2>
+      <p>Everyone in the lab appears with their role, year and what they're working on, and upcoming time away shows at the top before it catches you out. Open a person for their projects, tasks, papers and training records.</p>
+      <p>The rest of running a lab lives here too. Collaborators sit on a map, ranked by how closely you work together, and lab orders show what's on the way and what's running late.</p>
+      <ul>
+        <li>Training records and out-of-office on each person</li>
+        <li>Email anyone in one tap</li>
+        <li>A barcode scanner for stock-takes</li>
+      </ul>
+    </div>
+    <div class="shot trio reveal">
+      <div class="phone p1"><img src="img/collab_map.jpg" alt="Collaborators on a map"></div>
+      <div class="phone p2"><img src="img/lab.jpg" alt="Bench People view with an upcoming absence at the top"></div>
+      <div class="phone p3"><img src="img/orders.jpg" alt="Lab orders on the way, with delayed items flagged"></div>
+    </div>
+  </div>
+</section>
+
+<!-- vi. Admin -->
+<section class="feature">
+  <div class="wrap side flip has-combo">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">vi.</span> Service &amp; admin</p>
+      <h2>Lighten your administrative load.</h2>
+      <p>Study sections, peer review, committees, society roles: each role gets its own card, grouped into lanes, so you can see at a glance where your time is going. Busy roles show their next few tasks, and quiet ones shrink to a pill.</p>
+      <p>Open a role to find its tasks, key dates, important emails and links in one place. Its due dates flow into Today and Deadlines, so a score sheet never sneaks up on you.</p>
+      <ul>
+        <li>"Next due" right at the top of every role</li>
+        <li>Recurring key dates that roll forward on their own</li>
+        <li>On the Mac, drag an email straight from Mail onto a role</li>
+      </ul>
+    </div>
+    <div class="shot combo reveal">
+      <div class="mac"><img src="img/mac_admin.webp" alt="Bench Admin board on Mac with roles grouped into lanes"></div>
+      <div class="phone"><img src="img/admin_sheet.jpg" alt="A study section role sheet on iPhone"></div>
+    </div>
+  </div>
+</section>
+
+<!-- vii. Deadlines & events -->
+<section class="feature">
+  <div class="wrap side has-pair">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">vii.</span> Deadlines &amp; events</p>
+      <h2>Nothing sneaks up on you.</h2>
+      <p>Deadlines are gathered for you from your grants, papers, committees and events, so you never retype a date. Each week is laid out the way you'd plan it, and each item shows where it came from.</p>
+      <p>Events get a map of where the year takes you: conferences, seminars and study section meetings, each with its dates, your talk and what needs doing before you go.</p>
+      <ul>
+        <li>Mark yourself going or maybe, and see how far off it is</li>
+        <li>A CV-style log of every poster and talk, yours and your lab's</li>
+        <li>Invited talks stand out from the rest</li>
+      </ul>
+    </div>
+    <div class="shot pair reveal"><div class="phone back"><img src="img/schedule.jpg" alt="Bench Deadlines view"></div><div class="phone front"><img src="img/events.jpg" alt="Bench Events map with upcoming meetings"></div></div>
+  </div>
+</section>
+
+<!-- viii. Teaching -->
+<section class="feature">
+  <div class="wrap side flip has-pair">
+    <div class="copy reveal">
+      <p class="kicker"><span class="n">viii.</span> Teaching</p>
+      <h2>Courses and guest lectures, without the scramble.</h2>
+      <p>Each course shows its next class and whether you've prepped it. Open one for the meeting times, the teaching team, this week's sessions and the key dates for the term. Guest lectures you give in other people's classes are tracked too, each with its own prep list.</p>
+      <ul>
+        <li>Course site and Zoom links one tap away</li>
+        <li>Midterms, grade deadlines and other term dates kept with the course</li>
+        <li>Past guest lectures kept by year, ready for your CV</li>
+      </ul>
+    </div>
+    <div class="shot pair reveal"><div class="phone back"><img src="img/teaching.jpg" alt="Bench Teaching view"></div><div class="phone front"><img src="img/course_sheet.jpg" alt="A course sheet with the teaching team and this week's sessions"></div></div>
+  </div>
+</section>
+
+<section class="small" id="small">
+  <div class="wrap">
+    <p class="eyebrow">And the small things</p>
+    <h2 style="max-width: 16em">Built the way a lab actually runs.</h2>
+    <div class="grid3">
+      <div><h3><span>☁️</span> Your iCloud, your data</h3><p>Everything syncs through your own iCloud account. There are no servers and no sign-up.</p></div>
+      <div><h3><span>💻</span> Mac and iPhone</h3><p>Do the heavy data entry on the Mac and tick things off on your phone. Nearly every feature is on both.</p></div>
+      <div><h3><span>🎙️</span> Siri</h3><p>Say "Add a Top Priority to Bench" from anywhere. Secondary Goals and Quick Wins work the same way.</p></div>
+      <div><h3><span>🧩</span> Home Screen widget</h3><p>Keep today's list on your Home Screen, and tick tasks off right from the widget.</p></div>
+      <div><h3><span>⚡️</span> Quick actions</h3><p>Press and hold the app icon to add a task to any of Today's buckets.</p></div>
+      <div><h3><span>🔎</span> Search everything</h3><p>One search covers projects, grants, papers, people, events and tasks.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="try" id="try">
+  <div class="wrap">
+    <img class="big-icon" src="img/icon.png" alt="Bench app icon">
+    <h2>Coming soon.</h2>
+    <p>Bench is early and personal. This is a sneak peek for a few friends and colleagues who run labs, while I get it ready to share. If it looks useful to you, I'd love to hear what you think.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="status">Mac · Coming soon</p>
+        <h3>Download for Mac</h3>
+        <p>A signed download that keeps itself up to date.</p>
+        <button type="button" class="btn primary soon" data-soon="Not quite yet. The Mac download is coming soon.">Download for Mac</button>
+        <p class="soon-note" role="status" aria-live="polite"></p>
+      </div>
+      <div class="card">
+        <p class="status">iPhone · Coming soon</p>
+        <h3>Join the beta</h3>
+        <p>The iPhone beta will arrive through Apple's TestFlight app.</p>
+        <button type="button" class="btn ghost soon" data-soon="Not quite yet. The TestFlight beta is coming soon.">Join on TestFlight</button>
+        <p class="soon-note" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="brand" style="font-size:14px"><img src="img/icon.png" alt="" style="width:22px;height:22px">Bench</span>
+    <span>A personal project. The screenshots show a made-up lab.</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+  // Download buttons: no builds yet, so say so instead of going anywhere
+  document.querySelectorAll('.soon').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var n = b.nextElementSibling; n.textContent = b.dataset.soon; n.classList.add('show');
+    });
+  });
+  // Hero icon: build the slab's edge from stacked copies of the face
+  (function () {
+    var slab = document.querySelector('.hero-icon .slab'), face = slab && slab.querySelector('.face');
+    if (!face) return;
+    for (var i = 14; i >= 1; i--) {
+      var e = face.cloneNode(); e.className = 'edge'; e.style.setProperty('--z', i); slab.insertBefore(e, face);
+    }
+  })();
+  // Hero icon leans toward the pointer (mouse/trackpad only, and only if motion is welcome)
+  (function () {
+    var img = document.querySelector('.hero-icon .stage');
+    if (!img || !matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) return;
+    var raf = 0;
+    window.addEventListener('pointermove', function (e) {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () {
+        var r = img.getBoundingClientRect();
+        var dx = (e.clientX - (r.left + r.width / 2)) / innerWidth;
+        var dy = (e.clientY - (r.top + r.height / 2)) / innerHeight;
+        img.style.transform = 'rotateY(' + (dx * 6).toFixed(2) + 'deg) rotateX(' + (-dy * 6).toFixed(2) + 'deg)';
+      });
+    });
+  })();
+</script>
+</body>
+</html>
