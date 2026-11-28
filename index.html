@@ -252,6 +252,7 @@ section.try > .wrap > p { color: var(--ink-2); font-size: 18px; max-width: 34em;
 @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
 
 footer { border-top: 1px solid var(--rule); padding: 30px 0 50px; font-size: 13.5px; color: var(--ink-3); }
+footer a { color: var(--ink-3); text-decoration: underline; text-underline-offset: 2px; }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -490,7 +491,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
 <footer>
   <div class="wrap">
     <span class="brand" style="font-size:14px"><img src="img/icon.png" alt="" style="width:22px;height:22px">Bench</span>
-    <span>A personal project. The screenshots show a made-up lab.</span>
+    <span>A personal project. The screenshots show a made-up lab. · <a href="privacy/">Privacy</a></span>
   </div>
 </footer>
 
